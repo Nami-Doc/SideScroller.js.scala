@@ -35,7 +35,7 @@ object Point {
   }
 }
 
-object ScalaJSExample {
+object SideScroller {
   var keysPressed = mutable.Map[Int, Boolean](
     Keys.RIGHT -> false,
     Keys.LEFT  -> false

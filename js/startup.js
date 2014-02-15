@@ -1,1 +1,1 @@
-ScalaJS.modules.example_ScalaJSExample().main();
+ScalaJS.modules.examplegame_SideScroller().main();
