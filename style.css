@@ -1,0 +1,8 @@
+#main {
+  width: 800px;
+  height: 400px;
+  background-color: #90ee90;
+}
+#main #character {
+  position: relative;
+}
