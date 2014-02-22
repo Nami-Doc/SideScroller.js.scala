@@ -13,8 +13,11 @@ object Keys {
 }
 
 case class Character(x: Int, y: Int) {
+  val speedX = 5
+  val speedY = 20
+
   def moveWith(p: Point) = { // TODO lenses n stuff
-    copy(x = this.x + p.x, y = this.y + p.y)
+    copy(x = x + (p.x * speedX), y = y + (p.y * speedY))
   }
 }
 
@@ -22,6 +25,7 @@ case class Character(x: Int, y: Int) {
 case class Point(x: Int, y: Int)
 object Point {
   def fromKeys(keys: mutable.Map[Int, Boolean]) = {
+
     val x = if (keys(Keys.RIGHT))
         1
       else if (keys(Keys.LEFT))
@@ -42,18 +46,24 @@ object SideScroller {
   )
 
   def main(): Unit = {
+    // wiring
     val frame = dom.document.getElementById("main")
     registerKeyEvents(frame)
+    val cFrame = dom.document.createElement("div")
+    cFrame.id = "character"
+    frame.appendChild(cFrame)
 
-    val character = Character(0, 0)
-    val characterFrame = dom.document.createElement("div")
-    characterFrame.id = "character"
-    pulse(frame, characterFrame, character)
+    // gameplay !
+    var character = Character(0, 0)
+    doDraw(frame, cFrame, character)
+    dom.setInterval(() => character = doDraw(frame, cFrame, character.moveWith(Point.fromKeys(keysPressed))), 100)
   }
 
-  @tailrec
-  def pulse(frame: HTMLElement, characterFrame: HTMLElement, c: Character): Character = {
-    pulse(frame, characterFrame, c.moveWith(Point.fromKeys(keysPressed)))
+  def doDraw(frame: HTMLElement, cFrame: HTMLElement, character: Character): Character = {
+    dom.console.log("Do tick")
+    cFrame.style.left = s"${character.x}px"
+    cFrame.style.bottom = s"${character.y}px"
+    character
   }
 
   private def registerKeyEvents(frame: HTMLElement): Unit = {
@@ -67,8 +77,8 @@ object SideScroller {
     }
 
     // key pressed
-    frame.onkeydown = updateWith(true)
+    dom.document.onkeydown = updateWith(true)
     // key released
-    frame.onkeyup = updateWith(false)
+    dom.document.onkeyup = updateWith(false)
   }
 }
