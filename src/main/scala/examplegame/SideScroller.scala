@@ -15,6 +15,20 @@ object Keys {
   val DOWN  = 40
 }
 
+object CollisionManager
+
+class Map {
+  val map =
+    """
+      |        *
+      |________ ______
+    """.stripMargin
+
+  def draw(frame: HTMLElement): Unit = {
+    
+  }
+}
+
 case class Character(x: Int, y: Int) {
   val speedX = 10
   val speedY = 20
@@ -87,7 +101,6 @@ object SideScroller {
   }
 
   def doDraw(frame: HTMLElement, cFrame: HTMLElement, character: Character): Character = {
-    dom.console.log("Do tick")
     cFrame.style.left = s"${character.x}px"
     cFrame.style.bottom = s"${character.y}px"
     character
