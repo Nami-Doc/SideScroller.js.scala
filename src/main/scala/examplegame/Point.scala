@@ -10,7 +10,7 @@ object Keys {
   val DOWN  = 40
 }
 
-// vectors...-ish way of doing it
+// vector...-ish way of doing it
 case class Point(x: Int, y: Int)
 object Point {
   def fromKeys(keys: mutable.Map[Int, Boolean]) = {

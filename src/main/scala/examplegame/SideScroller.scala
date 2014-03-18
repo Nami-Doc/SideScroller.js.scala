@@ -7,6 +7,15 @@ import scala.annotation.tailrec
 import scala.collection.mutable
 import scala.collection.immutable
 
+class Scene(var els: List[Element]) {
+  // :'(
+  def draw: Unit = {
+    els = for (
+      (el, i) <- els.zipWithIndex
+    ) yield el.tick.draw
+  }
+}
+
 object SideScroller {
   val frameWidth = 800
   val maxX = frameWidth - 40 // 40 is character width
@@ -26,20 +35,24 @@ object SideScroller {
     // wiring
     val frame = dom.document.getElementById("main")
     registerKeyEvents(frame)
+
+    // char
     val cFrame = dom.document.createElement("div")
     cFrame.id = "character"
     frame.appendChild(cFrame)
+    val character = Character(cFrame, 0, 0, keysPressed)
 
-    // gameplay !
-    var character = Character(0, 0)
-    doDraw(frame, cFrame, character)
-    dom.setInterval(() => character = doDraw(frame, cFrame, character.moveWith(Point.fromKeys(keysPressed))), 100)
-  }
+    // obstacle
+    val oFrame = dom.document.createElement("div")
+    oFrame.classList.add("obstacle")
+    frame.appendChild(oFrame)
+    val obstacle = Obstacle(oFrame, 50, 50)
 
-  def doDraw(frame: HTMLElement, cFrame: HTMLElement, character: Character): Character = {
-    cFrame.style.left = s"${character.x}px"
-    cFrame.style.bottom = s"${character.y}px"
-    character
+    // scene
+    val scene = new Scene(List(character, obstacle))
+    scene.draw
+    // go go go !
+    dom.setInterval(() => scene.draw, 100)
   }
 
   private def registerKeyEvents(frame: HTMLElement): Unit = {

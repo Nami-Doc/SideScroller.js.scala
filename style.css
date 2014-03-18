@@ -11,3 +11,10 @@
   background-color: #000;
   transition: left 0.1s, bottom 0.1s;
 }
+#main .obstacle {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  background-color: #008000;
+  transition: left 0.1s, bottom 0.1s;
+}
