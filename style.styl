@@ -4,16 +4,19 @@
   height 400px
   background-color #90ee90
 
-  #character
+  block($color)
     position absolute
     width 40px
     height 40px
-    background-color black
+    background-color $color
     transition left 0.1s, bottom 0.1s
 
+
+  #character
+    block: black
+
   .obstacle
-    position absolute
-    width 40px
-    height 40px
-    background-color green
-    transition left 0.1s, bottom 0.1s
+    block: green
+
+  .monster
+    block: red

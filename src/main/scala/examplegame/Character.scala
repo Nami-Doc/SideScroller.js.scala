@@ -27,8 +27,8 @@ case class Obstacle(override val el: HTMLElement, override val x: Int, override 
 case class Monster(override val el: HTMLElement, override val x: Int, override val y: Int,
                    baseX: Int, baseY: Int)
      extends Element {
-  val wanderX: Int = 2
-  val wanderY: Int = 2
+  val wanderX: Int = 1
+  val wanderY: Int = 0
 
   // Monsters should "wander off" aimlessly, base$ + wander$
   def tick: Monster = {

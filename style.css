@@ -18,3 +18,10 @@
   background-color: #008000;
   transition: left 0.1s, bottom 0.1s;
 }
+#main .monster {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  background-color: #f00;
+  transition: left 0.1s, bottom 0.1s;
+}

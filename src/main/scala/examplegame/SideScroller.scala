@@ -9,7 +9,7 @@ import scala.collection.immutable
 
 class Scene(var els: List[Element]) {
   // :'(
-  def draw: Unit = {
+  def draw(): Unit = {
     els = for (
       (el, i) <- els.zipWithIndex
     ) yield el.tick.draw
@@ -46,10 +46,16 @@ object SideScroller {
     val oFrame = dom.document.createElement("div")
     oFrame.classList.add("obstacle")
     frame.appendChild(oFrame)
-    val obstacle = Obstacle(oFrame, 50, 50)
+    val obstacle = Obstacle(oFrame, 50, 10)
+
+    // monster
+    val mFrame = dom.document.createElement("div")
+    mFrame.classList.add("monster")
+    frame.appendChild(mFrame)
+    val monster = Monster(mFrame, 100, 10, 100, 10)
 
     // scene
-    val scene = new Scene(List(character, obstacle))
+    val scene = new Scene(List(character, obstacle, monster))
     scene.draw
     // go go go !
     dom.setInterval(() => scene.draw, 100)
