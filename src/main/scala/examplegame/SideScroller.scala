@@ -2,7 +2,8 @@ package examplegame
 
 import scala.scalajs.js
 import org.scalajs.dom
-import org.scalajs.dom.{HTMLElement, Event, extensions}
+import org.scalajs.dom.{HTMLElement, Event}
+import org.scalajs.dom.extensions._
 import scala.annotation.tailrec
 import scala.collection.mutable
 import scala.collection.immutable
@@ -24,14 +25,16 @@ object SideScroller {
 
   // @todo move that
   var keysPressed = mutable.Map[Int, Boolean](
-    Keys.RIGHT -> false,
-    Keys.LEFT  -> false,
+    KeyCode.right -> false,
+    KeyCode.left  -> false,
 
-    Keys.UP    -> false,
-    Keys.DOWN  -> false
+    KeyCode.up    -> false,
+    KeyCode.down  -> false
   )
 
   def main(): Unit = {
+    KeyCode.up
+
     // wiring
     val frame = dom.document.getElementById("main")
     registerKeyEvents(frame)
@@ -56,9 +59,9 @@ object SideScroller {
 
     // scene
     val scene = new Scene(List(character, obstacle, monster))
-    scene.draw
+    scene.draw()
     // go go go !
-    dom.setInterval(() => scene.draw, 100)
+    dom.setInterval(() => scene.draw(), 100)
   }
 
   private def registerKeyEvents(frame: HTMLElement): Unit = {
