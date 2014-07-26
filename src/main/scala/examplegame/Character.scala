@@ -1,66 +1,49 @@
 package examplegame
 
 import org.scalajs.dom.HTMLElement
-import scala.util.Random
 import scala.collection.mutable
 
 trait Element {
-  val el: HTMLElement
   val x: Int
   val y: Int
+  val allowCollide: Boolean
 
-  def tick: Element
-
-  def draw: this.type = {
-    el.style.left = s"${x}px"
-    el.style.bottom = s"${y}px"
-    this
-  }
+  def tick: Element = this
 }
 
-case class Obstacle(override val el: HTMLElement, override val x: Int, override val y: Int)
+
+case class Ground(override val x: Int, override val y: Int) extends Element {
+  override val allowCollide = true
+}
+
+case class Obstacle(override val x: Int, override val y: Int)
   extends Element {
 
-  def tick: Obstacle = this
+  override val allowCollide = false
 }
 
-case class Monster(override val el: HTMLElement, override val x: Int, override val y: Int,
-                   baseX: Int, baseY: Int)
+case class Monster(override val x: Int, override val y: Int)
      extends Element {
-  val wanderX: Int = 1
-  val wanderY: Int = 0
+  override val allowCollide = false
 
-  // Monsters should "wander off" aimlessly, base$ + wander$
-  def tick: Monster = {
-    // mobs will randomly move
-    val r = new Random()
-    // this is so dumb I can't get over it ...
-    copy(x = baseX + r.nextInt(wanderX * 2) - wanderX,
-         y = baseY + r.nextInt(wanderY * 2) - wanderY)
-  }
+  //override def collide(c: Character): Unit = {
+  //  // Aruna-ing.
+  //}
 }
 
-case class Character(override val el: HTMLElement, override val x: Int, override val y: Int,
-                     keymap: mutable.Map[Int, Boolean])
+case class Character(override val x: Int, override val y: Int)
      extends Element {
-  val speedX = 10
-  val speedY = 20
+  override val allowCollide = false
+  override def tick: Character = this //moveWith(Point.fromKeys(keymap))
 
-  def tick: Character = moveWith(Point.fromKeys(keymap))
-
-  def moveWith(p: Point) = { // TODO lenses n stuff
-    var newX = x + (p.x * speedX)
-    if (newX < 0)
-      newX = 0
-    if (newX > SideScroller.maxX) // (width=400)-(char width)
-      newX = SideScroller.maxX
-
-    var newY = y + (p.y * speedY)
-    if (newY < 0)
-      newY = 0
-    if (newY > SideScroller.maxY)
-      newY = SideScroller.maxY
-
-    copy(x = newX, y = newY)
-  }
+  val speedX = 1
+  val speedY = 1
 }
+
+object Ground {
+  def grass(x: Int, y: Int) = new Ground(x, y)
+}
+object Obstacle {
+  def fir(x: Int, y: Int) = new Obstacle(x, y)
+}
+object Monster { }

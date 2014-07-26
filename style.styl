@@ -1,19 +1,19 @@
 #main
-  position relative
-  width 800px
-  height 400px
-  background-color #90ee90
+  position: relative
+  width: 800px
+  height: 400px
+  background-color: #90ee90
 
-  block($color)
-    position absolute
-    width 40px
-    height 40px
-    background-color $color
-    transition left 0.1s, bottom 0.1s
+  block($color, $size = 40px)
+    position: absolute
+    width: $size
+    height: $size
+    background-color: $color
+    transition: left 0.1s, bottom 0.1s
 
 
   #character
-    block: black
+    block: black 20px
 
   .obstacle
     block: green

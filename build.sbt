@@ -3,10 +3,12 @@ scalaJSSettings
 
 name := "SideScroller"
 
+scalaVersion := "2.11.1"
+
 version := "0.1-SNAPSHOT"
 
 libraryDependencies ++= Seq(
-    "org.scala-lang.modules.scalajs" %% "scalajs-dom" % "0.2"
+    "org.scala-lang.modules.scalajs" %%% "scalajs-dom" % "0.6"
 )
 
 // Specify additional .js file to be passed to package-js and optimize-js
