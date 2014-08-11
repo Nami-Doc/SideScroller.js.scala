@@ -2,10 +2,9 @@ package examplegame
 
 import scala.scalajs.js.JSApp
 import org.scalajs.dom
-import org.scalajs.dom.{HTMLElement, Event}
+import org.scalajs.dom.HTMLElement
 import org.scalajs.dom.extensions._
 import scala.collection.mutable
-import scala.collection.immutable
 
 case class DisplayableElement(htmlEl: HTMLElement, el: Element) {
   def tick: this.type = {
@@ -23,12 +22,14 @@ case class DisplayableElement(htmlEl: HTMLElement, el: Element) {
 case class Point(x: Int, y: Int)
 
 object DisplayableElement {
-  def make(el: Element): DisplayableElement =
-    DisplayableElement(null, el)
+  def make(el: Element): DisplayableElement = {
+    val htmlEl = dom.document.createElement("div")
+    htmlEl.classList add el.getClass.getName // meeeh :(
+    DisplayableElement(htmlEl, el)
+  }
 }
 
-case class Tileset(tiles: Seq[DisplayableElement]) {
-}
+case class Tileset(tiles: Seq[DisplayableElement])
 
 class Map(tilesets: Seq[Tileset]) {
   def draw(): Unit = {
@@ -49,6 +50,7 @@ object Map {
       case 's' => Obstacle.fir(pos)
       case 'r' => Obstacle.rock(pos)
       case 'p' => UnwalkableGround.water(pos)
+      case '*' => Character(pos)
     }
   }
 
