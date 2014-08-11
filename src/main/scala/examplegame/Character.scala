@@ -4,25 +4,30 @@ import org.scalajs.dom.HTMLElement
 import scala.collection.mutable
 
 trait Element {
-  val x: Int
-  val y: Int
+  val pos: Point
   val allowCollide: Boolean
 
   def tick: Element = this
 }
 
 
-case class Ground(override val x: Int, override val y: Int) extends Element {
+case class WalkableGround(override val pos: Point)
+     extends Element {
   override val allowCollide = true
 }
 
-case class Obstacle(override val x: Int, override val y: Int)
+case class UnwalkableGround(override val pos: Point)
+     extends Element {
+  override val allowCollide = false
+}
+
+case class Obstacle(override val pos: Point)
   extends Element {
 
   override val allowCollide = false
 }
 
-case class Monster(override val x: Int, override val y: Int)
+case class Monster(override val pos: Point)
      extends Element {
   override val allowCollide = false
 
@@ -31,7 +36,7 @@ case class Monster(override val x: Int, override val y: Int)
   //}
 }
 
-case class Character(override val x: Int, override val y: Int)
+case class Character(override val pos: Point)
      extends Element {
   override val allowCollide = false
   override def tick: Character = this //moveWith(Point.fromKeys(keymap))
@@ -40,10 +45,14 @@ case class Character(override val x: Int, override val y: Int)
   val speedY = 1
 }
 
-object Ground {
-  def grass(x: Int, y: Int) = new Ground(x, y)
+object WalkableGround {
+  def grass(pos: Point) = new WalkableGround(pos)
+}
+object UnwalkableGround {
+  def water(pos: Point) = new UnwalkableGround(pos)
 }
 object Obstacle {
-  def fir(x: Int, y: Int) = new Obstacle(x, y)
+  def fir(pos: Point) = new Obstacle(pos)
+  def rock(pos: Point) = new Obstacle(pos)
 }
 object Monster { }

@@ -14,60 +14,50 @@ case class DisplayableElement(htmlEl: HTMLElement, el: Element) {
   }
 
   def draw: this.type = {
-    htmlEl.style.left = s"${el.x * Map.sizeX}px"
-    htmlEl.style.bottom = s"${el.y * Map.sizeY}px"
+    htmlEl.style.left = s"${el.pos.x * Map.sizeX}px"
+    htmlEl.style.bottom = s"${el.pos.y * Map.sizeY}px"
     this
   }
 }
+
+case class Point(x: Int, y: Int)
 
 object DisplayableElement {
   def make(el: Element): DisplayableElement =
     DisplayableElement(null, el)
 }
 
-class Tileset(tiles: Seq[DisplayableElement]) {}
-class Map(tilesets: Seq[Tileset]) {
-  def draw: Unit = {
-
-  }
+case class Tileset(tiles: Seq[DisplayableElement]) {
 }
 
-/*
-  def moveWith(p: Point) = {
-    var newX = x + (p.x * speedX)
-    if (newX < 0)
-      newX = 0
-    if (newX > SideScroller.maxX) // (width=400)-(char width)
-      newX = SideScroller.maxX
-
-    var newY = y + (p.y * speedY)
-    if (newY < 0)
-      newY = 0
-    if (newY > SideScroller.maxY)
-      newY = SideScroller.maxY
-
-    copy(x = newX, y = newY)
+class Map(tilesets: Seq[Tileset]) {
+  def draw(): Unit = {
+    for {
+      tileset <- tilesets
+      tile <- tileset.tiles
+    } tile.draw
   }
- */
+}
 
 object Map {
   val sizeX = 20
   val sizeY = 20
 
-  def charToElement(c: Char, x: Int, y: Int): Element = {
+  def charToElement(c: Char, pos: Point): Element = {
     c match {
-      case ' ' => Ground.grass(x, y)
-      case 's' => Obstacle.fir(x, y)
+      case ' ' => WalkableGround.grass(pos)
+      case 's' => Obstacle.fir(pos)
+      case 'r' => Obstacle.rock(pos)
+      case 'p' => UnwalkableGround.water(pos)
     }
   }
 
-  def fromString(mapText: String) = new Map(
-    for { (line, y) <- mapText.split('\n').zipWithIndex }
-    yield new Tileset(
-      for { (char, x) <- line.toList.zipWithIndex }
-      yield DisplayableElement.make(Map.charToElement(char, x, y))
+  def tilesFromString(mapText: String) =
+    for {(line, y) <- mapText.split('\n').zipWithIndex}
+    yield Tileset(
+      for {(char, x) <- line.toList.zipWithIndex}
+      yield DisplayableElement.make(charToElement(char, Point(x, y)))
     )
-  )
 }
 
 object SideScroller extends JSApp {
@@ -97,33 +87,27 @@ object SideScroller extends JSApp {
     val frame = dom.document.getElementById("main")
     registerKeyEvents(frame)
 
-    // char
-    val cFrame = dom.document.createElement("div")
-    cFrame.id = "character"
-    frame.appendChild(cFrame)
-    val character = DisplayableElement(cFrame, Character(0, 0))
-
-    val map = Map.fromString(dom.document.getElementById("map").innerHTML)
+    val mapText = dom.document.getElementById("map").innerHTML
+    val map = new Map(Map.tilesFromString(mapText))
 
     // go go go !
-    map.draw
+    map.draw()
     // todo map.answerToKeymap ? or what
-    dom.setInterval(() => map.draw, 100)
+    dom.setInterval(() => map.draw(), 100)
   }
 
   private def registerKeyEvents(frame: HTMLElement): Unit = {
-    def updateWith(v: => Boolean): Function1[dom.KeyboardEvent, Unit] = {
-      {(e: dom.KeyboardEvent) =>
-        val which = e.keyCode.toInt
+    def updateWith(setTo: Boolean): (dom.KeyboardEvent) => Unit = {
+      (e: dom.KeyboardEvent) =>
+        val which = e.keyCode
         if (keysPressed contains which) {
-          keysPressed(which) = v
+          keysPressed(which) = setTo
         }
-      }
     }
 
     // key pressed
-    dom.document.onkeydown = updateWith(true)
+    dom.document.onkeydown = updateWith(setTo = true)
     // key released
-    dom.document.onkeyup = updateWith(false)
+    dom.document.onkeyup = updateWith(setTo = false)
   }
 }
