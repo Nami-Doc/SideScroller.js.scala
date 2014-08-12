@@ -19,8 +19,6 @@ case class DisplayableElement(htmlEl: HTMLElement, el: Element) {
   }
 }
 
-case class Point(x: Int, y: Int)
-
 object DisplayableElement {
   def make(el: Element): DisplayableElement = {
     val htmlEl = dom.document.createElement("div")
