@@ -3,7 +3,6 @@ package examplegame
 import scala.collection.mutable
 import org.scalajs.dom.extensions.KeyCode
 
-// vector...-ish way of doing it
 case class Point(x: Int, y: Int)
 object Point {
   // TODO should "Point" really care about DOM keycodes? dont think so

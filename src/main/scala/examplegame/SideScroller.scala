@@ -43,17 +43,26 @@ object Map {
   val sizeY = 20
 
   def charToElement(c: Char, pos: Point): Element = {
-    c match {
+    c.toLower match {
       case ' ' => WalkableGround.grass(pos)
-      case 's' => Obstacle.fir(pos)
-      case 'r' => Obstacle.rock(pos)
-      case 'p' => UnwalkableGround.water(pos)
+      case 'm' => WalkableGround.grass(pos) // TODO: castle ground
+      case 'i' => WalkableGround.grass(pos) // TODO: ice
+      case 'w' => UnwalkableGround.water(pos)
+      case 'r' => UnwalkableGround.rock(pos)
+      case 'e' => UnwalkableGround.rock(pos) // TODO: safeguard before water
+      case 'f' => UnwalkableGround.rock(pos) // TODO: lava
+      case 'b' => UnwalkableGround.rock(pos) // TODO: safeguard before lava
+      case 't' => UnwalkableGround.rock(pos) // TODO: ??
+      case 'p' => Obstacle.fir(pos) // TODO: text panel
+      case 'g' => Obstacle.fir(pos) // TODO: ??
+      case 's' => Obstacle.fir(pos) // TODO: ??
+      case 'j' => Obstacle.fir(pos) // TODO: ice rock
       case '*' => Character(pos)
     }
   }
 
   def tilesFromString(mapText: String) =
-    for {(line, y) <- mapText.split('\n').zipWithIndex}
+    for {(line, y) <- mapText.split("\n").zipWithIndex}
     yield Tileset(
       for {(char, x) <- line.toList.zipWithIndex}
       yield DisplayableElement.make(charToElement(char, Point(x, y)))
@@ -84,10 +93,10 @@ object SideScroller extends JSApp {
 
   def main(): Unit = {
     // wiring
-    val frame = dom.document.getElementById("main")
-    registerKeyEvents(frame)
+    registerKeyEvents()
 
     val mapText = dom.document.getElementById("map").innerHTML
+    println(mapText)
     val map = new Map(Map.tilesFromString(mapText))
 
     // go go go !
@@ -96,7 +105,7 @@ object SideScroller extends JSApp {
     dom.setInterval(() => map.draw(), 100)
   }
 
-  private def registerKeyEvents(frame: HTMLElement): Unit = {
+  private def registerKeyEvents(): Unit = {
     def updateWith(setTo: Boolean): (dom.KeyboardEvent) => Unit = {
       (e: dom.KeyboardEvent) =>
         val which = e.keyCode

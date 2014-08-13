@@ -1,8 +1,5 @@
 package examplegame
 
-import org.scalajs.dom.HTMLElement
-import scala.collection.mutable
-
 trait Element {
   val pos: Point
   val allowCollide: Boolean
@@ -50,9 +47,9 @@ object WalkableGround {
 }
 object UnwalkableGround {
   def water(pos: Point) = new UnwalkableGround(pos)
+  def rock(pos: Point) = new UnwalkableGround(pos)
 }
 object Obstacle {
   def fir(pos: Point) = new Obstacle(pos)
-  def rock(pos: Point) = new Obstacle(pos)
 }
 object Monster { }
