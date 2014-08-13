@@ -6,81 +6,8 @@ import org.scalajs.dom.HTMLElement
 import org.scalajs.dom.extensions._
 import scala.collection.mutable
 
-case class DisplayableElement(htmlEl: HTMLElement, el: Element) {
-  def tick: this.type = {
-    el.tick
-    this
-  }
-
-  def draw: this.type = {
-    htmlEl.style.left = s"${el.pos.x * Map.sizeX}px"
-    htmlEl.style.bottom = s"${el.pos.y * Map.sizeY}px"
-    this
-  }
-}
-
-object DisplayableElement {
-  def make(el: Element): DisplayableElement = {
-    val htmlEl = dom.document.createElement("div")
-    htmlEl.classList add el.getClass.getName // meeeh :(
-    DisplayableElement(htmlEl, el)
-  }
-}
-
-case class Tileset(tiles: Seq[DisplayableElement])
-
-class Map(tilesets: Seq[Tileset]) {
-  def draw(): Unit = {
-    for {
-      tileset <- tilesets
-      tile <- tileset.tiles
-    } tile.draw
-  }
-}
-
-object Map {
-  val sizeX = 20
-  val sizeY = 20
-
-  def charToElement(c: Char, pos: Point): Element = {
-    c.toLower match {
-      case ' ' => WalkableGround.grass(pos)
-      case 'm' => WalkableGround.grass(pos) // TODO: castle ground
-      case 'i' => WalkableGround.grass(pos) // TODO: ice
-      case 'w' => UnwalkableGround.water(pos)
-      case 'r' => UnwalkableGround.rock(pos)
-      case 'e' => UnwalkableGround.rock(pos) // TODO: safeguard before water
-      case 'f' => UnwalkableGround.rock(pos) // TODO: lava
-      case 'b' => UnwalkableGround.rock(pos) // TODO: safeguard before lava
-      case 't' => UnwalkableGround.rock(pos) // TODO: ??
-      case 'p' => Obstacle.fir(pos) // TODO: text panel
-      case 'g' => Obstacle.fir(pos) // TODO: ??
-      case 's' => Obstacle.fir(pos) // TODO: ??
-      case 'j' => Obstacle.fir(pos) // TODO: ice rock
-      case '*' => Character(pos)
-    }
-  }
-
-  def tilesFromString(mapText: String) =
-    for {(line, y) <- mapText.split("\n").zipWithIndex}
-    yield Tileset(
-      for {(char, x) <- line.toList.zipWithIndex}
-      yield DisplayableElement.make(charToElement(char, Point(x, y)))
-    )
-}
-
 object SideScroller extends JSApp {
-  val MAX_X = 30
-  val MAX_Y = 30
-  val map =
-    """
-      |
-    """.stripMargin
-
-  val frameWidth = 800
-  val maxX = frameWidth - 40 // 40 is character width
-  val frameHeight = 400
-  val maxY = frameHeight - 40 // 40 is character height
+  val tileSize = 40
 
   // @todo move that
   var keysPressed = mutable.Map[Int, Boolean](
@@ -92,17 +19,25 @@ object SideScroller extends JSApp {
   )
 
   def main(): Unit = {
-    // wiring
+    val main = dom.document.getElementById("main")
+
     registerKeyEvents()
 
-    val mapText = dom.document.getElementById("map").innerHTML
-    println(mapText)
-    val map = new Map(Map.tilesFromString(mapText))
+    val mapText = dom.document.getElementById("map").innerHTML.trim
+    val map = new GameMap(GameMap.generate(main, mapText))
+
+    // wiring
+    val mapHeight = map.tilesets.length
+    val mapWidth  = map.tilesets(0).tiles.length // nice hack m9
+    println(s"Setting map dimensions to width=$mapWidth/height=$mapHeight")
+    main.style.width = s"${mapWidth * tileSize}px"
+    main.style.height = s"${mapHeight * tileSize}px"
+    println(map)
 
     // go go go !
     map.draw()
     // todo map.answerToKeymap ? or what
-    dom.setInterval(() => map.draw(), 100)
+//    dom.setInterval(() => map.draw(), 300)
   }
 
   private def registerKeyEvents(): Unit = {

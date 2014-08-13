@@ -1,27 +1,21 @@
-#main {
-  position: relative;
-  width: 800px;
-  height: 400px;
-  background-color: #90ee90;
-}
-#main #character {
+#main .game-element {
+  display: inline-block;
   position: absolute;
-  width: 20px;
-  height: 20px;
-  background-color: #000;
+  margin-top: 40px;
   transition: left 0.1s, bottom 0.1s;
 }
-#main .obstacle {
-  position: absolute;
+#main .Character {
+  width: 40px;
+  height: 40px;
+  background-color: #000;
+}
+#main .Obstacle {
   width: 40px;
   height: 40px;
   background-color: #008000;
-  transition: left 0.1s, bottom 0.1s;
 }
-#main .monster {
-  position: absolute;
+#main .Monster {
   width: 40px;
   height: 40px;
   background-color: #f00;
-  transition: left 0.1s, bottom 0.1s;
 }

@@ -1,10 +1,12 @@
 package examplegame
 
-trait Element {
+sealed trait Element {
   val pos: Point
   val allowCollide: Boolean
 
   def tick: Element = this
+
+  def kind: String = getClass.getName.split('.').last // :'(
 }
 
 
