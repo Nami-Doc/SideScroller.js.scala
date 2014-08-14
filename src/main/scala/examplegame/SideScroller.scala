@@ -24,19 +24,17 @@ object SideScroller extends JSApp {
     registerKeyEvents()
 
     val mapText = dom.document.getElementById("map").innerHTML.trim
-    val map = new GameMap(GameMap.generate(main, mapText))
+    val map = GameMap(GameMap.generate(main, mapText))
 
     // wiring
-    val mapHeight = map.tilesets.length
-    val mapWidth  = map.tilesets(0).tiles.length // nice hack m9
-    println(s"Setting map dimensions to width=$mapWidth/height=$mapHeight")
-    main.style.width = s"${mapWidth * tileSize}px"
-    main.style.height = s"${mapHeight * tileSize}px"
+    main.style.width = s"${map.width * tileSize}px"
+    main.style.height = s"${map.height * tileSize}px"
     println(map)
 
     // go go go !
     map.draw()
-    // todo map.answerToKeymap ? or what
+    // todo map.answerToKeymap ? or what\
+    console log "update disabled"
 //    dom.setInterval(() => map.draw(), 300)
   }
 

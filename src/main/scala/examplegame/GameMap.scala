@@ -10,8 +10,9 @@ case class DisplayableElement(htmlEl: HTMLElement, el: Element) {
   }
 
   def draw: this.type = {
+    // todo: this needs to go.
     htmlEl.style.left = s"${el.pos.x * GameMap.sizeX}px"
-    htmlEl.style.bottom = s"${el.pos.y * GameMap.sizeY}px"
+    htmlEl.style.top = s"${el.pos.y * GameMap.sizeY}px"
     this
   }
 }
@@ -28,7 +29,10 @@ object DisplayableElement {
 
 case class Tileset(tiles: Seq[DisplayableElement])
 
-class GameMap(val tilesets: Seq[Tileset]) {
+case class GameMap(tilesets: Seq[Tileset]) {
+  val height = tilesets.length
+  val width = tilesets(0).tiles.length // nice hack m9
+
   def draw(): Unit = {
     for {
       tileset <- tilesets
