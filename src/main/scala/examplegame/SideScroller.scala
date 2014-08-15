@@ -34,7 +34,7 @@ object SideScroller extends JSApp {
     // go go go !
     map.draw()
     // todo map.answerToKeymap ? or what\
-    console log "update disabled"
+    println("update disabled")
 //    dom.setInterval(() => map.draw(), 300)
   }
 
