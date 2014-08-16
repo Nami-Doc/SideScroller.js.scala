@@ -33,8 +33,7 @@ object SideScroller extends JSApp {
 
     // go go go !
     map.draw()
-    // todo map.answerToKeymap ? or what\
-    println("update disabled")
+    // todo map.answerToKeymap ? or what
 //    dom.setInterval(() => map.draw(), 300)
   }
 
@@ -43,7 +42,9 @@ object SideScroller extends JSApp {
       (e: dom.KeyboardEvent) =>
         val which = e.keyCode
         if (keysPressed contains which) {
+          println(s"Recognized key press: $which")
           keysPressed(which) = setTo
+          e.preventDefault()
         }
     }
 
