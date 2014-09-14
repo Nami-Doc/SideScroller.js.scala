@@ -7,8 +7,10 @@ import org.scalajs.dom.extensions._
 import scala.collection.mutable
 
 object SideScroller extends JSApp {
+  type Keymap = mutable.Map[Int, Boolean]
+
   // @todo move that
-  var keysPressed = mutable.Map[Int, Boolean](
+  var keysPressed: Keymap = mutable.Map[Int, Boolean](
     KeyCode.right -> false,
     KeyCode.left  -> false,
 
@@ -33,7 +35,7 @@ object SideScroller extends JSApp {
     // go go go !
     map.draw()
     dom.setInterval({ () =>
-      map.eachTile(el => Behavior(game, el))
+      map.eachTile(el => Behavior.of(el)(map, el, keysPressed))
       map.draw()
     }, 300)
   }
