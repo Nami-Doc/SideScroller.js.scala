@@ -3,41 +3,36 @@ package examplegame
 import org.scalajs.dom
 import org.scalajs.dom.HTMLElement
 
-case class DisplayableElement(htmlEl: HTMLElement, el: Element) {
-  def tick: this.type = {
-    el.tick
-    this
-  }
 
-  def draw: this.type = {
-    htmlEl.setAttribute("pos", s"x=${el.pos.x};y=${el.pos.y}")
-    htmlEl.style.left = s"${el.pos.x * GameMap.sizeX}px"
-    htmlEl.style.bottom = s"${el.pos.y * GameMap.sizeY}px"
-    this
-  }
-}
+case class Tileset(tiles: Seq[Element])
 
-object DisplayableElement {
-  def make(parent: HTMLElement, el: Element): DisplayableElement = {
-    val htmlEl = dom.document.createElement("div")
-    htmlEl.classList add "game-element"
-    htmlEl.classList add el.kind
-    parent appendChild htmlEl
-    DisplayableElement(htmlEl, el)
-  }
-}
+// TODO maybe a GameMap shouldn't care about rendering
+// and we'd do it in SideScroller#main? (or a separate fn for that purpose)
+case class GameMap(ctx: dom.CanvasRenderingContext2D,
+                   tilesets: Seq[Tileset]) {
+  val tileSizePx = 10 // in pixels
 
-case class Tileset(tiles: Seq[DisplayableElement])
-
-case class GameMap(tilesets: Seq[Tileset]) {
   val height = tilesets.length
   val width = tilesets(0).tiles.length // nice hack m9
 
+  val heightPx = height * tileSizePx
+  val widthPx = width  * tileSizePx
+
   def draw(): Unit = {
+    // clear...
+    ctx.fillStyle = "black"
+    ctx.fillRect(0, 0, widthPx, heightPx)
+
     for {
       tileset <- tilesets
       tile <- tileset.tiles
-    } tile.draw
+    } {
+      ctx.fillStyle = tile.color
+      println(tile.pos.x * tileSizePx, tile.pos.y * tileSizePx,
+        tileSizePx, tileSizePx)
+      ctx.fillRect(tile.pos.x * tileSizePx, tile.pos.y * tileSizePx,
+        tileSizePx, tileSizePx)
+    }
   }
 }
 
@@ -64,7 +59,7 @@ object GameMap {
     }
   }
 
-  def generate(parent: HTMLElement, mapText: String) = {
+  def tilesFromText(mapText: String) = {
     // can't split by '\n' char because of a ScalaJS bug
     // (on the version I have locally, should be fixed by now)
     val lines = mapText split "\n"
@@ -75,10 +70,7 @@ object GameMap {
       yield {
         val relY = numLines - (y - 1) // bottom is 0
         println(s"Creating elem at $x/$relY")
-        DisplayableElement.make(
-          parent,
-          charToElement(char, Point(x, relY)) // y starts at 1
-        )
+        charToElement(char, Point(x, relY)) // y starts at 1
       }
     )
   }

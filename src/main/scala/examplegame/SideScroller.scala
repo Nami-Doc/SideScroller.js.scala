@@ -7,8 +7,6 @@ import org.scalajs.dom.extensions._
 import scala.collection.mutable
 
 object SideScroller extends JSApp {
-  val tileSize = 40
-
   // @todo move that
   var keysPressed = mutable.Map[Int, Boolean](
     KeyCode.right -> false,
@@ -20,15 +18,16 @@ object SideScroller extends JSApp {
 
   def main(): Unit = {
     val main = dom.document.getElementById("main")
+    val canvas = main.cast[dom.HTMLCanvasElement].getContext("2d").cast[dom.CanvasRenderingContext2D]
 
     registerKeyEvents()
 
-    val mapText = dom.document.getElementById("map").innerHTML.trim
-    val map = GameMap(GameMap.generate(main, mapText))
+    val mapText: String = dom.document.getElementById("map").innerHTML.trim
+    val map = GameMap(canvas, GameMap.tilesFromText(mapText))
 
     // wiring
-    main.style.width = s"${map.width * tileSize}px"
-    main.style.height = s"${map.height * tileSize}px"
+    main.style.width = s"${map.widthPx}px"
+    main.style.height = s"${map.heightPx}px"
     println(map)
 
     // go go go !
