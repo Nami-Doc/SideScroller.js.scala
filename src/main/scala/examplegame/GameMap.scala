@@ -24,10 +24,17 @@ case class GameMap(ctx: dom.CanvasRenderingContext2D,
       tile <- tileset.tiles
     } Display(ctx, tile)
   }
+
+  def eachTile(fn: (Element) => Unit): Unit = {
+    for {
+      tileset <- tilesets
+      tile <- tileset.tiles
+    } fn(tile)
+  }
 }
 
 object GameMap {
-  val tileSizePx = 10
+  val tileSizePx = 3
 
   val sizeX = 20
   val sizeY = 20

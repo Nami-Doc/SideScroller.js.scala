@@ -26,14 +26,16 @@ object SideScroller extends JSApp {
     val map = GameMap(canvas, GameMap.tilesFromText(mapText))
 
     // wiring
-    main.style.width = s"${map.widthPx}px"
-    main.style.height = s"${map.heightPx}px"
+    main.style.width = s"1300px"
+    main.style.height = s"400px"
     println(map)
 
     // go go go !
     map.draw()
-    // todo map.answerToKeymap ? or what
-//    dom.setInterval(() => map.draw(), 300)
+    dom.setInterval({ () =>
+      map.eachTile(el => Behavior(game, el))
+      map.draw()
+    }, 300)
   }
 
   private def registerKeyEvents(): Unit = {

@@ -5,8 +5,6 @@ import org.scalajs.dom
 sealed trait Element {
   val pos: Point
   val allowCollide: Boolean
-
-  def tick: Element = this
 }
 
 
@@ -38,8 +36,6 @@ abstract class Monster(override val pos: Point)
 case class Character(override val pos: Point)
      extends Element {
   override val allowCollide = false
-
-  override def tick: Character = this //moveWith(Point.fromKeys(keymap))
 
   val speedX = 1
   val speedY = 1
