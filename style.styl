@@ -1,25 +1,17 @@
 #main
-  /*position: absolute*/
-  /*background-color: #90ee90*/
+  position: absolute
 
-  $tileSize = 40px
-
-  block($color, $size = $tileSize)
-    width: $size
-    height: $size
-    background-color: $color
-
-  // go game elements!
   .game-element
-    /*display: inline-block*/
-    position: fixed
+    height: 20px
+    width: @height
+    position: absolute
     transition: left 0.1s, bottom 0.1s
 
   .Character
-    block: black
+    background-color: black
 
   .Obstacle
-    block: green
+    background-color: green
 
   .Monster
-    block: red
+    background-color: red

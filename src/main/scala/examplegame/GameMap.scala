@@ -10,7 +10,7 @@ case class DisplayableElement(htmlEl: HTMLElement, el: Element) {
   }
 
   def draw: this.type = {
-    // todo: this needs to go.
+    htmlEl.setAttribute("pos", s"x=${el.pos.x};y=${el.pos.y}")
     htmlEl.style.left = s"${el.pos.x * GameMap.sizeX}px"
     htmlEl.style.bottom = s"${el.pos.y * GameMap.sizeY}px"
     this
