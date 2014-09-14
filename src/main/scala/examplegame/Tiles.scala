@@ -1,37 +1,34 @@
 package examplegame
 
+import org.scalajs.dom
+
 sealed trait Element {
   val pos: Point
   val allowCollide: Boolean
-  val color: String
 
   def tick: Element = this
 }
 
 
-case class WalkableGround(override val pos: Point)
+abstract class WalkableGround(override val pos: Point)
      extends Element {
   override val allowCollide = true
-  override val color = "green"
 }
 
-case class UnwalkableGround(override val pos: Point)
+abstract class UnwalkableGround(override val pos: Point)
      extends Element {
   override val allowCollide = false
-  override val color = "black"
 }
 
-case class Obstacle(override val pos: Point)
+abstract class Obstacle(override val pos: Point)
   extends Element {
 
   override val allowCollide = false
-  override val color = "grey"
 }
 
-case class Monster(override val pos: Point)
+abstract class Monster(override val pos: Point)
      extends Element {
   override val allowCollide = false
-  override val color = "red"
 
   //override def collide(c: Character): Unit = {
   //  // Aruna-ing.
@@ -41,7 +38,6 @@ case class Monster(override val pos: Point)
 case class Character(override val pos: Point)
      extends Element {
   override val allowCollide = false
-  override val color = "yellow"
 
   override def tick: Character = this //moveWith(Point.fromKeys(keymap))
 
@@ -50,13 +46,39 @@ case class Character(override val pos: Point)
 }
 
 object WalkableGround {
-  def grass(pos: Point) = new WalkableGround(pos)
+  case class Grass(override val pos: Point) extends WalkableGround(pos)
 }
 object UnwalkableGround {
-  def water(pos: Point) = new UnwalkableGround(pos)
-  def rock(pos: Point) = new UnwalkableGround(pos)
+  case class Water(override val pos: Point) extends UnwalkableGround(pos)
+  case class Rock(override val pos: Point) extends UnwalkableGround(pos)
 }
 object Obstacle {
-  def fir(pos: Point) = new Obstacle(pos)
+  case class Fir(override val pos: Point) extends Obstacle(pos)
 }
 object Monster { }
+
+// ---
+
+// display manages anything display-related
+// TODO also manage camera move (need to have character)
+object Display {
+  private def color(el: Element): String = el match {
+    case WalkableGround.Grass(pos)   => "green"
+
+    case UnwalkableGround.Water(pos) => "blue"
+    case UnwalkableGround.Rock(pos)  => "grey"
+
+    case Obstacle.Fir(pos)           => "darkgreen"
+
+    case Character(pos)              => "yellow"
+
+    case _                           => "black"
+  }
+
+  def apply(ctx: dom.CanvasRenderingContext2D, el: Element): Unit = {
+    ctx.fillStyle = color(el)
+
+    val s = GameMap.tileSizePx // size
+    ctx.fillRect(el.pos.x * s, el.pos.y * s, s, s)
+  }
+}

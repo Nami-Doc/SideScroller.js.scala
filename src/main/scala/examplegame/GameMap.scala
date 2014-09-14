@@ -10,7 +10,7 @@ case class Tileset(tiles: Seq[Element])
 // and we'd do it in SideScroller#main? (or a separate fn for that purpose)
 case class GameMap(ctx: dom.CanvasRenderingContext2D,
                    tilesets: Seq[Tileset]) {
-  val tileSizePx = 10 // in pixels
+  import GameMap._
 
   val height = tilesets.length
   val width = tilesets(0).tiles.length // nice hack m9
@@ -19,42 +19,34 @@ case class GameMap(ctx: dom.CanvasRenderingContext2D,
   val widthPx = width  * tileSizePx
 
   def draw(): Unit = {
-    // clear...
-    ctx.fillStyle = "black"
-    ctx.fillRect(0, 0, widthPx, heightPx)
-
     for {
       tileset <- tilesets
       tile <- tileset.tiles
-    } {
-      ctx.fillStyle = tile.color
-      println(tile.pos.x * tileSizePx, tile.pos.y * tileSizePx,
-        tileSizePx, tileSizePx)
-      ctx.fillRect(tile.pos.x * tileSizePx, tile.pos.y * tileSizePx,
-        tileSizePx, tileSizePx)
-    }
+    } Display(ctx, tile)
   }
 }
 
 object GameMap {
+  val tileSizePx = 10
+
   val sizeX = 20
   val sizeY = 20
 
   def charToElement(c: Char, pos: Point): Element = {
     c.toLower match {
-      case ' ' => WalkableGround.grass(pos)
-      case 'm' => WalkableGround.grass(pos) // TODO: castle ground
-      case 'i' => WalkableGround.grass(pos) // TODO: ice
-      case 'w' => UnwalkableGround.water(pos)
-      case 'r' => UnwalkableGround.rock(pos)
-      case 'e' => UnwalkableGround.rock(pos) // TODO: safeguard before water
-      case 'f' => UnwalkableGround.rock(pos) // TODO: lava
-      case 'b' => UnwalkableGround.rock(pos) // TODO: safeguard before lava
-      case 't' => UnwalkableGround.rock(pos) // TODO: ??
-      case 'p' => Obstacle.fir(pos) // TODO: text panel
-      case 'g' => Obstacle.fir(pos) // TODO: ??
-      case 's' => Obstacle.fir(pos) // TODO: ??
-      case 'j' => Obstacle.fir(pos) // TODO: ice rock
+      case ' ' => WalkableGround.Grass(pos)
+      case 'm' => WalkableGround.Grass(pos) // TODO: castle ground
+      case 'i' => WalkableGround.Grass(pos) // TODO: ice
+      case 'w' => UnwalkableGround.Water(pos)
+      case 'r' => UnwalkableGround.Rock(pos)
+      case 'e' => UnwalkableGround.Rock(pos) // TODO: safeguard before water
+      case 'f' => UnwalkableGround.Rock(pos) // TODO: lava
+      case 'b' => UnwalkableGround.Rock(pos) // TODO: safeguard before lava
+      case 't' => UnwalkableGround.Rock(pos) // TODO: ??
+      case 'p' => Obstacle.Fir(pos) // TODO: text panel
+      case 'g' => Obstacle.Fir(pos) // TODO: ??
+      case 's' => Obstacle.Fir(pos) // TODO: ??
+      case 'j' => Obstacle.Fir(pos) // TODO: ice rock
       case '*' => Character(pos)
     }
   }
@@ -68,9 +60,7 @@ object GameMap {
     yield Tileset(
       for {(char, x) <- line.toList.zipWithIndex}
       yield {
-        val relY = numLines - (y - 1) // bottom is 0
-        println(s"Creating elem at $x/$relY")
-        charToElement(char, Point(x, relY)) // y starts at 1
+        charToElement(char, Point(x, y)) // y starts at 1
       }
     )
   }
