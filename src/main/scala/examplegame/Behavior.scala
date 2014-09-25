@@ -21,14 +21,17 @@ object Behavior {
 
     }
   }
+  // TODO: this code uses implicits ONLY so that later parts can define
+  //  new behaviors for grass/water/.. without altering this file,
+  //  but is it possible with these defaults? Maybe if you import later
+  //  (this is why trait Behavior is not sealed
+  //   should trait Element not be sealed either? it prolly should)
   implicit object GrassBehavior extends Behavior[Grass]
   implicit object WaterBehavior extends Behavior[Water]
   implicit object RockBehavior extends Behavior[Rock]
   implicit object FirBehavior extends Behavior[Fir]
 
   def of[T <: Element](el: T) = el match {
-    // explicitly list every cases so that we can
-    //  add other implicit objects later down and not change this code
     case Character => implicitly[Behavior[Character]]
     case Monster => implicitly[Behavior[Monster]]
 
