@@ -1,8 +1,8 @@
 package examplegame
 
-import examplegame.Obstacle.Fir
 import examplegame.UnwalkableGround.{Rock, Water}
 import examplegame.WalkableGround.Grass
+import examplegame.Obstacle.Fir
 
 trait Behavior[T <: Element] {
   def apply(ctx: Behavior.Ctx): Unit = Unit
@@ -32,12 +32,12 @@ object Behavior {
   implicit object FirBehavior extends Behavior[Fir]
 
   def of[T <: Element](el: T) = el match {
-    case Character => implicitly[Behavior[Character]]
-    case Monster => implicitly[Behavior[Monster]]
+    case Character(_) => implicitly[Behavior[Character]]
+    //case Monster(_) => implicitly[Behavior[Monster]]
 
-    case Grass => implicitly[Behavior[Grass]]
-    case Water => implicitly[Behavior[Water]]
-    case Rock => implicitly[Behavior[Rock]]
-    case Fir => implicitly[Behavior[Fir]]
+    case Grass(_) => implicitly[Behavior[Grass]]
+    case Water(_) => implicitly[Behavior[Water]]
+    case Rock(_) => implicitly[Behavior[Rock]]
+    case Fir(_) => implicitly[Behavior[Fir]]
   }
 }
