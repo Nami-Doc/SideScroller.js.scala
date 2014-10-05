@@ -3,8 +3,17 @@ package examplegame
 import scala.collection.mutable
 import org.scalajs.dom.extensions.KeyCode
 
-case class Point(x: Int, y: Int)
+case class Point(x: Int, y: Int) {
+  def +(that: Point) = {
+    Point(x + that.x, y + that.y)
+  }
+  def -(that: Point) = {
+    Point(x - that.x, y - that.y)
+  }
+}
+
 object Point {
+
   // TODO should "Point" really care about DOM keycodes? dont think so
   def fromKeys(keys: mutable.Map[Int, Boolean]) = {
     val x = if (keys(KeyCode.right))

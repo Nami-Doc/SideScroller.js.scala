@@ -25,11 +25,12 @@ case class GameMap(ctx: dom.CanvasRenderingContext2D,
     } Display(ctx, tile)
   }
 
-  def eachTile(fn: (Element) => Unit): Unit = {
-    for {
+  def mapTile(fn: (Element) => Element): Unit = {
+    copy(tilesets = for {
       tileset <- tilesets
+    } yield Tileset(for {
       tile <- tileset.tiles
-    } fn(tile)
+    } yield fn(tile)))
   }
 }
 

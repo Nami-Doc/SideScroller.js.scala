@@ -5,20 +5,26 @@ import examplegame.WalkableGround.Grass
 import examplegame.Obstacle.Fir
 
 trait Behavior[T <: Element] {
-  def apply(ctx: Behavior.Ctx): Unit = Unit
+  def apply(ctx: Behavior.Ctx): Element = {
+    val (map, el, keymap) = ctx
+    el
+  }
 }
 
 object Behavior {
   type Ctx = (GameMap, Element, SideScroller.Keymap)
 
+  /*
   implicit object MonsterBehavior extends Behavior[Monster] {
-    override def apply(ctx: Ctx): Unit = {
-
-    }
+    override def apply(ctx: Ctx): Monster = {
+      val (map, monster, keymap) = ctx
+     }
   }
+  */
   implicit object CharacterBehavior extends Behavior[Character] {
-    override def apply(ctx: Ctx): Unit = {
-
+    override def apply(ctx: Ctx): Character = {
+      val (map, char : Character, keymap) = ctx
+      char.copy(pos = char.pos + Point.fromKeys(keymap))
     }
   }
   // TODO: this code uses implicits ONLY so that later parts can define
