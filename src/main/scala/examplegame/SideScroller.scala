@@ -2,8 +2,8 @@ package examplegame
 
 import scala.scalajs.js.JSApp
 import org.scalajs.dom
-import org.scalajs.dom.HTMLElement
-import org.scalajs.dom.extensions._
+import org.scalajs.dom.html._
+import org.scalajs.dom.ext._
 import scala.collection.mutable
 
 object SideScroller extends JSApp {
@@ -19,13 +19,13 @@ object SideScroller extends JSApp {
   )
 
   def main(): Unit = {
-    val main = dom.document.getElementById("main")
-    val canvas = main.cast[dom.HTMLCanvasElement].getContext("2d").cast[dom.CanvasRenderingContext2D]
+    val main = dom.document.getElementById("main").cast[dom.raw.HTMLElement]
+    val canvas = main.cast[Canvas].getContext("2d").cast[dom.CanvasRenderingContext2D]
 
     registerKeyEvents()
 
     val mapText: String = dom.document.getElementById("map").innerHTML.trim
-    val map = GameMap(canvas, GameMap.tilesFromText(mapText))
+    var map = GameMap(canvas, GameMap.tilesFromText(mapText))
 
     // wiring
     main.style.width = s"1300px"
@@ -35,7 +35,7 @@ object SideScroller extends JSApp {
     // go go go !
     map.draw()
     dom.setInterval({ () =>
-      map.mapTile(el => Behavior.of(el)(map, el, keysPressed))
+      map = map.mapTiles(el => Behavior.of(el)(map, el, keysPressed))
       map.draw()
     }, 300)
   }

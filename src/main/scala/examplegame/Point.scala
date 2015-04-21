@@ -1,7 +1,7 @@
 package examplegame
 
 import scala.collection.mutable
-import org.scalajs.dom.extensions.KeyCode
+import org.scalajs.dom.ext.KeyCode
 
 case class Point(x: Int, y: Int) {
   def +(that: Point) = {

@@ -1,7 +1,6 @@
 package examplegame
 
 import org.scalajs.dom
-import org.scalajs.dom.HTMLElement
 
 
 case class Tileset(tiles: Seq[Element])
@@ -25,7 +24,7 @@ case class GameMap(ctx: dom.CanvasRenderingContext2D,
     } Display(ctx, tile)
   }
 
-  def mapTile(fn: (Element) => Element): Unit = {
+  def mapTiles(fn: (Element) => Element): GameMap = {
     copy(tilesets = for {
       tileset <- tilesets
     } yield Tileset(for {
