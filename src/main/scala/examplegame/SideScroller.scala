@@ -27,6 +27,8 @@ object SideScroller extends JSApp {
     val mapText: String = dom.document.getElementById("map").innerHTML.trim
     var map = GameMap(canvas, GameMap.tilesFromText(mapText))
 
+    //var player =
+
     // wiring
     main.style.width = s"1300px"
     main.style.height = s"400px"

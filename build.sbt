@@ -16,7 +16,7 @@ libraryDependencies ++= Seq(
 
 bootSnippet := "examplegame.SideScroller().main();"
 
-refreshBrowsers <<= refreshBrowsers.triggeredBy(fastOptJS in Compile)
+updateBrowsers <<= updateBrowsers.triggeredBy(fastOptJS in Compile)
 
 // Specify additional .js file to be passed to package-js and optimize-js
 //unmanagedSources in (Compile, ScalaJSKeys.packageJS) +=

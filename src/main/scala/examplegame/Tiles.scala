@@ -3,28 +3,27 @@ package examplegame
 import org.scalajs.dom
 
 sealed trait Element {
-  val pos: Point
   val allowCollide: Boolean
 }
 
 
-abstract class WalkableGround(override val pos: Point)
+abstract class WalkableGround
      extends Element {
   override val allowCollide = true
 }
 
-abstract class UnwalkableGround(override val pos: Point)
+abstract class UnwalkableGround
      extends Element {
   override val allowCollide = false
 }
 
-abstract class Obstacle(override val pos: Point)
+abstract class Obstacle
   extends Element {
 
   override val allowCollide = false
 }
 
-abstract class Monster(override val pos: Point)
+abstract class Monster
      extends Element {
   override val allowCollide = false
 
@@ -33,7 +32,7 @@ abstract class Monster(override val pos: Point)
   //}
 }
 
-case class Character(override val pos: Point)
+case class Character()
      extends Element {
   override val allowCollide = false
 
@@ -42,14 +41,14 @@ case class Character(override val pos: Point)
 }
 
 object WalkableGround {
-  case class Grass(override val pos: Point) extends WalkableGround(pos)
+  case class Grass() extends WalkableGround
 }
 object UnwalkableGround {
-  case class Water(override val pos: Point) extends UnwalkableGround(pos)
-  case class Rock(override val pos: Point) extends UnwalkableGround(pos)
+  case class Water() extends UnwalkableGround
+  case class Rock() extends UnwalkableGround
 }
 object Obstacle {
-  case class Fir(override val pos: Point) extends Obstacle(pos)
+  case class Fir() extends Obstacle
 }
 object Monster { }
 
@@ -59,25 +58,23 @@ object Monster { }
 // TODO also manage camera move (need to have character)
 object Display {
   private def color(el: Element): String = el match {
-    case WalkableGround.Grass(pos)   => "green"
+    case WalkableGround.Grass()   => "green"
 
-    case UnwalkableGround.Water(pos) => "blue"
-    case UnwalkableGround.Rock(pos)  => "grey"
+    case UnwalkableGround.Water() => "blue"
+    case UnwalkableGround.Rock()  => "grey"
 
-    case Obstacle.Fir(pos)           => "darkgreen"
+    case Obstacle.Fir()           => "darkgreen"
 
-    case Character(pos)              => "yellow"
+    case Character()              => "yellow"
 
     case _                           => "black"
   }
 
-  def apply(ctx: dom.CanvasRenderingContext2D, el: Element): Unit = {
+  def apply(ctx: dom.CanvasRenderingContext2D, el: Element, y: Int, x: Int): Unit = {
     ctx.fillStyle = color(el)
 
-    val s = GameMap.tileSizePx // size
-    if (color(el) =="yellow") {
-      println(s"im at ${el.pos}")
-    }
-    ctx.fillRect(el.pos.x * s, el.pos.y * s, s, s)
+    val s = GameMap.tileSizePx
+    ctx.fillRect(x * s, y * s,
+                 s, s)
   }
 }

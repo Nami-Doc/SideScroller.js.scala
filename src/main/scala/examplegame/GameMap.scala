@@ -19,9 +19,9 @@ case class GameMap(ctx: dom.CanvasRenderingContext2D,
 
   def draw(): Unit = {
     for {
-      tileset <- tilesets
-      tile <- tileset.tiles
-    } Display(ctx, tile)
+      (tileset, y) <- tilesets.zipWithIndex
+      (tile, x) <- tileset.tiles.zipWithIndex
+    } Display(ctx, tile, y, x)
   }
 
   def mapTiles(fn: (Element) => Element): GameMap = {
@@ -39,22 +39,22 @@ object GameMap {
   val sizeX = 20
   val sizeY = 20
 
-  def charToElement(c: Char, pos: Point): Element = {
+  def charToElement(c: Char): Element = {
     c.toLower match {
-      case ' ' => WalkableGround.Grass(pos)
-      case 'm' => WalkableGround.Grass(pos) // TODO: castle ground
-      case 'i' => WalkableGround.Grass(pos) // TODO: ice
-      case 'w' => UnwalkableGround.Water(pos)
-      case 'r' => UnwalkableGround.Rock(pos)
-      case 'e' => UnwalkableGround.Rock(pos) // TODO: safeguard before water
-      case 'f' => UnwalkableGround.Rock(pos) // TODO: lava
-      case 'b' => UnwalkableGround.Rock(pos) // TODO: safeguard before lava
-      case 't' => UnwalkableGround.Rock(pos) // TODO: ??
-      case 'p' => Obstacle.Fir(pos) // TODO: text panel
-      case 'g' => Obstacle.Fir(pos) // TODO: ??
-      case 's' => Obstacle.Fir(pos) // TODO: ??
-      case 'j' => Obstacle.Fir(pos) // TODO: ice rock
-      case '*' => Character(pos)
+      case ' ' => WalkableGround.Grass()
+      case 'm' => WalkableGround.Grass() // TODO: castle ground
+      case 'i' => WalkableGround.Grass() // TODO: ice
+      case 'w' => UnwalkableGround.Water()
+      case 'r' => UnwalkableGround.Rock()
+      case 'e' => UnwalkableGround.Rock() // TODO: safeguard before water
+      case 'f' => UnwalkableGround.Rock() // TODO: lava
+      case 'b' => UnwalkableGround.Rock() // TODO: safeguard before lava
+      case 't' => UnwalkableGround.Rock() // TODO: ??
+      case 'p' => Obstacle.Fir() // TODO: text panel
+      case 'g' => Obstacle.Fir() // TODO: ??
+      case 's' => Obstacle.Fir() // TODO: ??
+      case 'j' => Obstacle.Fir() // TODO: ice rock
+      case '*' => Character()
     }
   }
 
@@ -62,11 +62,11 @@ object GameMap {
     // can't split by '\n' char because of a ScalaJS bug
     // (on the version I have locally, should be fixed by now)
     val lines = mapText split "\n"
-    for {(line, y) <- lines.zipWithIndex}
+    for {line <- lines}
     yield Tileset(
-      for {(char, x) <- line.toList.zipWithIndex}
+      for {char <- line.toList}
       yield {
-        charToElement(char, Point(x, y)) // y starts at 1
+        charToElement(char) // y starts at 1
       }
     )
   }
