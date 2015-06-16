@@ -12,7 +12,7 @@ case class GameMap(ctx: dom.CanvasRenderingContext2D,
   import GameMap._
 
   val height = tilesets.length
-  val width = tilesets(0).tiles.length // nice hack m9
+  val width = tilesets.head.tiles.length // nice hack m9
 
   val heightPx = height * tileSizePx
   val widthPx = width  * tileSizePx
@@ -62,7 +62,6 @@ object GameMap {
     // can't split by '\n' char because of a ScalaJS bug
     // (on the version I have locally, should be fixed by now)
     val lines = mapText split "\n"
-    val numLines = lines.length
     for {(line, y) <- lines.zipWithIndex}
     yield Tileset(
       for {(char, x) <- line.toList.zipWithIndex}

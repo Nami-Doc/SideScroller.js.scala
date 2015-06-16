@@ -30,12 +30,10 @@ object SideScroller extends JSApp {
     // wiring
     main.style.width = s"1300px"
     main.style.height = s"400px"
-    println(map)
 
     // go go go !
     map.draw()
     dom.setInterval({ () =>
-      map = map.mapTiles(el => Behavior.of(el)(map, el, keysPressed))
       map.draw()
     }, 300)
   }

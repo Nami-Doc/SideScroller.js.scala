@@ -75,6 +75,9 @@ object Display {
     ctx.fillStyle = color(el)
 
     val s = GameMap.tileSizePx // size
+    if (color(el) =="yellow") {
+      println(s"im at ${el.pos}")
+    }
     ctx.fillRect(el.pos.x * s, el.pos.y * s, s, s)
   }
 }
