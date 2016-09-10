@@ -11,7 +11,7 @@ scalaVersion := "2.11.6"
 version := "0.1-SNAPSHOT"
 
 libraryDependencies ++= Seq(
-  "org.scala-js" %%% "scalajs-dom" % "0.8.0"
+  "org.scala-js" %%% "scalajs-dom" % "0.9.1"
 )
 
 bootSnippet := "examplegame.SideScroller().main();"

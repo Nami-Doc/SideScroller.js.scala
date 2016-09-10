@@ -2,72 +2,33 @@ package examplegame
 
 import org.scalajs.dom
 
+case class GameMap(ground: Seq[Seq[Tile]], details: Seq[Seq[Tile]],
+                   entities: Seq[Entity]) {
+}
 
-case class Tileset(tiles: Seq[Element])
+case class Renderer() {
+  val tileSizePx = 3
 
-// TODO maybe a GameMap shouldn't care about rendering
-// and we'd do it in SideScroller#main? (or a separate fn for that purpose)
-case class GameMap(ctx: dom.CanvasRenderingContext2D,
-                   tilesets: Seq[Tileset]) {
-  import GameMap._
+  val tiles = Map(
+    "v" -> Tile("path/to/thing", Walkable())
+  )
 
-  val height = tilesets.length
-  val width = tilesets.head.tiles.length // nice hack m9
-
-  val heightPx = height * tileSizePx
-  val widthPx = width  * tileSizePx
-
-  def draw(): Unit = {
+  def render(map: GameMap): Unit = {
     for {
-      (tileset, y) <- tilesets.zipWithIndex
-      (tile, x) <- tileset.tiles.zipWithIndex
-    } Display(ctx, tile, y, x)
+      xs <- map.ground
+      x <- xs
+    } yield 1
   }
 
-  def mapTiles(fn: (Element) => Element): GameMap = {
-    copy(tilesets = for {
-      tileset <- tilesets
-    } yield Tileset(for {
-      tile <- tileset.tiles
-    } yield fn(tile)))
+  def apply(ctx: dom.CanvasRenderingContext2D): Unit = {
+//    ctx.fillStyle = color(el)
+//
+//    val s = GameMap.tileSizePx
+//    ctx.fillRect(x * s, y * s, s, s)
   }
 }
 
 object GameMap {
-  val tileSizePx = 3
-
   val sizeX = 20
   val sizeY = 20
-
-  def charToElement(c: Char): Element = {
-    c.toLower match {
-      case ' ' => WalkableGround.Grass()
-      case 'm' => WalkableGround.Grass() // TODO: castle ground
-      case 'i' => WalkableGround.Grass() // TODO: ice
-      case 'w' => UnwalkableGround.Water()
-      case 'r' => UnwalkableGround.Rock()
-      case 'e' => UnwalkableGround.Rock() // TODO: safeguard before water
-      case 'f' => UnwalkableGround.Rock() // TODO: lava
-      case 'b' => UnwalkableGround.Rock() // TODO: safeguard before lava
-      case 't' => UnwalkableGround.Rock() // TODO: ??
-      case 'p' => Obstacle.Fir() // TODO: text panel
-      case 'g' => Obstacle.Fir() // TODO: ??
-      case 's' => Obstacle.Fir() // TODO: ??
-      case 'j' => Obstacle.Fir() // TODO: ice rock
-      case '*' => Character()
-    }
-  }
-
-  def tilesFromText(mapText: String) = {
-    // can't split by '\n' char because of a ScalaJS bug
-    // (on the version I have locally, should be fixed by now)
-    val lines = mapText split "\n"
-    for {line <- lines}
-    yield Tileset(
-      for {char <- line.toList}
-      yield {
-        charToElement(char) // y starts at 1
-      }
-    )
-  }
 }
